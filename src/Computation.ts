@@ -1,4 +1,5 @@
-import { inCompute,setInCompute, Tracker } from "./tracker";
+import { inCompute, setInCompute, Tracker } from "./tracker";
+
 type TODO = any
 
 let nextId = 1;
@@ -12,14 +13,7 @@ let constructingComputation = false;
 export const pendingComputations: Computation[] = [];
 
 
-
-
 export const afterFlushCallbacks: Function[] = [];
-
-export function setCurrentComputation(c: Computation | null) {
-  Tracker.currentComputation = c;
-  Tracker.active = !!c;
-}
 
 export function requireFlush() {
   if (!willFlush) {
@@ -27,6 +21,7 @@ export function requireFlush() {
     willFlush = true;
   }
 }
+
 export class Computation {
   // http://docs.meteor.com/#computation_stopped
   /**
@@ -180,18 +175,19 @@ export class Computation {
     this.invalidated = false;
 
     var previous = Tracker.currentComputation;
-    setCurrentComputation(this);
     let previousInCompute = inCompute;
     setInCompute(true);
     try {
-      this._func(this)
+      Tracker.withComputation(this, () => {
+        this._func(this)
+      });
     } finally {
-      setCurrentComputation(previous);
       setInCompute(previousInCompute);
     }
   }
+
   _needsRecompute() {
-    return this.invalidated && ! this.stopped;
+    return this.invalidated && !this.stopped;
   }
 
   _recompute() {

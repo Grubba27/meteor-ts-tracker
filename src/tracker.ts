@@ -2,7 +2,7 @@ import {
   afterFlushCallbacks,
   Computation,
   pendingComputations,
-  requireFlush, setCurrentComputation,
+  requireFlush,
   setWillFlush,
 } from "./Computation";
 import { Dependency } from "./Dependency";
@@ -220,13 +220,7 @@ export const Tracker = {
    * @param {Function} func A function to call immediately.
    */
   nonreactive: (f: Function) => {
-    const previous = Tracker.currentComputation;
-    setCurrentComputation(null);
-    try {
-      return f();
-    } finally {
-      setCurrentComputation(previous);
-    }
+    return Tracker.withComputation(null, f);
   },
 
   /**
@@ -249,6 +243,20 @@ export const Tracker = {
   afterFlush: (f: Function) => {
     afterFlushCallbacks.push(f);
     requireFlush();
+  },
+
+  withComputation: (c: Computation | null, f: Function) => {
+    const previousComputation = Tracker.currentComputation;
+
+    Tracker.currentComputation = c;
+    Tracker.active = !!c;
+
+    try {
+      return f();
+    } finally {
+      Tracker.currentComputation = previousComputation;
+      Tracker.active = !!previousComputation;
+    }
   }
 }
 
