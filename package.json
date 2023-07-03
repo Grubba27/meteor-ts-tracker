@@ -7,6 +7,10 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Grubba27",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Grubba27/meteor-ts-tracker.git"
+  },
   "license": "MIT",
   "devDependencies": {
     "typescript": "^4.9.4",
