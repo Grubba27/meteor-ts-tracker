@@ -190,7 +190,7 @@ export const Tracker = {
    * thrown. Defaults to the error being logged to the console.
    * @returns {Tracker.Computation}
    */
-  autorun: (f: Function, options?: { onError: Function }) => {
+  autorun: (f: (c: Computation) => void, options?: { onError: Function }) => {
     if (typeof f !== 'function')
       throw new Error('Tracker.autorun requires a function argument');
 
@@ -228,7 +228,7 @@ export const Tracker = {
    * @locus Client
    * @param {Function} callback A callback function that will be invoked as `func(c)`, where `c` is the computation on which the callback is registered.
    */
-  onInvalidate: (f: Function) => {
+  onInvalidate: (f: (c: Computation) => void) => {
     if (!Tracker.active)
       throw new Error("Tracker.onInvalidate requires a currentComputation");
 
@@ -240,7 +240,7 @@ export const Tracker = {
    * @locus Client
    * @param {Function} callback A function to call at flush time.
    */
-  afterFlush: (f: Function) => {
+  afterFlush: (f: () => void) => {
     afterFlushCallbacks.push(f);
     requireFlush();
   },
@@ -283,8 +283,3 @@ export const createVariable = <T>(initialValue?: T): [
   ]
 
 }
-
-
-
-
-
