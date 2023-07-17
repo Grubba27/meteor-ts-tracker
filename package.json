@@ -1,6 +1,6 @@
 {
   "name": "meteor-ts-tracker",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Meteor Tracker rebuilt in TypeScript, ready to be used in any project.",
   "main": "dist/index.js",
   "scripts": {
